@@ -12,13 +12,13 @@ from langchain.memory import ConversationBufferMemory
 from langchain.prompts.prompt import PromptTemplate
 import streamlit as st 
 
-os.environ["OPENAI_API_TYPE"] = "azure"
-os.environ["OPENAI_API_VERSION"] = '2022-12-01'
-os.environ["OPENAI_API_KEY"] = "10618104e76848b5ab7f7de89c7dbb9b"
-os.environ["OPENAI_API_BASE"] =  "https://opex-az-openai.openai.azure.com/"
+openai.api_type = os.environ.get('OPENAI_API_TYPE')
+openai.api_version = os.environ.get('OPENAI_API_VERSION')
+openai.api_key = os.environ.get('OPENAI_API_KEY')
+openai.api_base = os.environ.get('OPENAI_API_BASE')
 
-speech_key = "5fedb525dc2944aba9d3a93c7153ac79" 
-speech_region = "southeastasia"
+speech_key = os.environ.get('SPEECH_KEY')
+speech_region = os.environ.get('SPEECH_REGION')
 speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=speech_region)
 audio_output_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
 audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
@@ -29,7 +29,7 @@ speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, au
 
 
 # Define the system message template
-system_template = """You are a call center agent having a conversation with a customer calling in to enquire about policy matters in Prudential. Use the uploaded document as a step by step template to answer customer questions.
+system_template = """Conversation between Me and AI.
 
 
 Question: {}
@@ -87,23 +87,23 @@ def main():
     embeddings = OpenAIEmbeddings(deployment='ada002embedding',chunk_size=1)
     recognition = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
 
-    #llm = AzureOpenAI(deployment_name="chatgpt",model_name="gpt-35-turbo")
-    llm = AzureOpenAI(deployment_name="opexchatbottest",model_name="text-davinci-003")
+    
+    llm = AzureOpenAI(deployment_name="",model_name="text-davinci-003")
     memory = ConversationBufferMemory(memory_key='chat_history',return_messages=True)
 
-    st.set_page_config(page_title="Talk2GenAI", layout="wide")     
+    st.set_page_config(page_title="Talkbot", layout="wide")     
     
-    pru_logo, title, opex_logo = st.columns(3, gap="large")
+    logo1, title, logo2 = st.columns(3, gap="large")
 
-    with pru_logo:
-        st.image("./prudential.png",width=200, use_column_width=False)
+    with logo1:
+        st.image("./image1.png",width=200, use_column_width=False)
 
     with title:
-        st.title("Talk2GenAI")
+        st.title("Talkbot")
 
 
-    with opex_logo:
-        st.image("./opex.jfif",width=130,use_column_width=False)
+    with logo2:
+        st.image("./image2.jfif",width=130,use_column_width=False)
 
     uploaded_file = st.file_uploader(label='Upload a PDF Document')
 
